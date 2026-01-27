@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaria Express</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; padding: 15px; margin: 0; }
+        .container { max-width: 500px; margin: auto; }
+        .card { background: #2d2d2d; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #e63946; }
+        h2 { color: #e63946; font-size: 1.1em; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; text-transform: uppercase; }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; background: #444; color: white; box-sizing: border-box; font-family: inherit; }
+        textarea { resize: none; height: 60px; border: 1px dashed #666; }
+        
+        .btn-categoria { width: 100%; background: #444; color: white; border: 2px solid #e63946; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; margin-bottom: 10px; position: relative; }
+        .btn-categoria::after { content: '▼'; position: absolute; right: 15px; font-size: 0.8em; }
+
+        .tipo-selecao { display: flex; gap: 10px; margin-bottom: 10px; }
+        .tipo-btn { flex: 1; padding: 10px; background: #444; border: 1px solid #666; color: white; border-radius: 5px; cursor: pointer; text-align: center; font-size: 0.85em; }
+        .tipo-btn.active { background: #e63946; border-color: white; font-weight: bold; }
+
+        .menu-grid { display: none; background: #333; border-radius: 8px; padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .item-grid { background: #444; padding: 12px; border-radius: 5px; text-align: center; cursor: pointer; font-size: 0.9em; border: 1px solid #555; }
+        .item-grid small { display: block; color: #aaa; margin-top: 2px; }
+
+        .item-selecionado { display: flex; align-items: center; justify-content: space-between; background: #3d3d3d; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; animation: fadeIn 0.3s; }
+        .controles { display: flex; align-items: center; gap: 15px; }
+        .btn-qtd { background: #e63946; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+        
+        .flex { display: flex; gap: 10px; }
+        .btn-enviar { width: 100%; background: #28a745; color: white; border: none; padding: 18px; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; margin-top: 10px; }
+        .total-box { background: #e63946; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .total-val { font-size: 1.8em; font-weight: bold; }
+        
+        /* Estilo Pix */
+        .pix-box { background: #1f1f1f; padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px dashed #00ffd5; text-align: center; }
+        .pix-chave { color: #00ffd5; font-weight: bold; font-size: 1.1em; word-break: break-all; margin: 10px 0; display: block; }
+        .btn-copiar { background: #00ffd5; color: black; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; font-weight: bold; cursor: pointer; }
+        .pix-aviso { color: #ffcc00; font-size: 0.8em; margin-top: 10px; display: block; font-style: italic; }
+
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>👤 Dados de Entrega</h2>
+        <input type="text" id="nome" placeholder="Nome Completo">
+        <input type="tel" id="tel" placeholder="Telefone / WhatsApp">
+        <input type="text" id="rua" placeholder="Rua / Logradouro">
+        <div class="flex">
+            <input type="text" id="numero" placeholder="Nº">
+            <select id="bairro" onchange="calc()">
+                <option value="0">Bairro</option>
+                <option value="4">Quarenta (R$ 4)</option>
+                <option value="5">Gleba (R$ 5)</option>
+            </select>
+        </div>
+        <input type="text" id="ref" placeholder="Ponto de Referência">
+    </div>
+
+    <div class="card">
+        <h2>🍕 Pizza</h2>
+        <div class="tipo-selecao">
+            <div id="tG" class="tipo-btn active" onclick="setTamanho('grande')">Grande (R$ 40)</div>
+            <div id="tB" class="tipo-btn" onclick="setTamanho('broto')">Broto (R$ 25)</div>
+        </div>
+        <div class="tipo-selecao">
+            <div id="bI" class="tipo-btn active" onclick="setTipo('inteira')">Inteira</div>
+            <div id="bM" class="tipo-btn" onclick="setTipo('meia')">Meia/Meia</div>
+        </div>
+
+        <button class="btn-categoria" id="btnSabor1" onclick="toggleMenu('lista1')">Escolher Sabor</button>
+        <div id="lista1" class="menu-grid">
+            <div class="item-grid" onclick="escolherSabor(1, 'Mussarela')">Mussarela</div>
+            <div class="item-grid" onclick="escolherSabor(1, 'Calabresa')">Calabresa</div>
+            <div class="item-grid" onclick="escolherSabor(1, 'Portuguesa')">Portuguesa</div>
+            <div class="item-grid" onclick="escolherSabor(1, 'Frango Catupiry')">Frango Catupiry</div>
+        </div>
+
+        <div id="containerMeia" class="hidden">
+            <button class="btn-categoria" id="btnSabor2" onclick="toggleMenu('lista2')">Escolher 2º Sabor</button>
+            <div id="lista2" class="menu-grid">
+                <div class="item-grid" onclick="escolherSabor(2, 'Mussarela')">Mussarela</div>
+                <div class="item-grid" onclick="escolherSabor(2, 'Calabresa')">Calabresa</div>
+                <div class="item-grid" onclick="escolherSabor(2, 'Portuguesa')">Portuguesa</div>
+                <div class="item-grid" onclick="escolherSabor(2, 'Frango Catupiry')">Frango Catupiry</div>
+            </div>
+        </div>
+        <textarea id="obsPizza" placeholder="Obs na pizza..."></textarea>
+    </div>
+
+    <div class="card">
+        <h2>🥟 Esfihas (R$ 5,00)</h2>
+        <button class="btn-categoria" onclick="toggleMenu('menuEsfihas')">Adicionar Esfihas</button>
+        <div id="menuEsfihas" class="menu-grid">
+            <div class="item-grid" onclick="addItem('esfihas', 'Carne', 5)">🥩 Carne</div>
+            <div class="item-grid" onclick="addItem('esfihas', 'Queijo', 5)">🧀 Queijo</div>
+            <div class="item-grid" onclick="addItem('esfihas', 'Frango', 5)">🍗 Frango</div>
+        </div>
+        <div id="carrinhoEsfihas"></div>
+    </div>
+
+    <div class="card">
+        <h2>🍟 Porções</h2>
+        <button class="btn-categoria" onclick="toggleMenu('menuPorcoes')">Adicionar Porções</button>
+        <div id="menuPorcoes" class="menu-grid">
+            <div class="item-grid" onclick="addItem('porcoes', 'Batata Frita', 25)">🍟 Batata <small>R$ 25</small></div>
+            <div class="item-grid" onclick="addItem('porcoes', 'Frango Pass.', 35)">🍗 Frango <small>R$ 35</small></div>
+            <div class="item-grid" onclick="addItem('porcoes', 'Calabresa', 30)">🥓 Calabresa <small>R$ 30</small></div>
+        </div>
+        <div id="carrinhoPorcoes"></div>
+    </div>
+
+    <div class="card">
+        <h2>🥤 Bebidas</h2>
+        <button class="btn-categoria" onclick="toggleMenu('menuBebidas')">Adicionar Bebidas</button>
+        <div id="menuBebidas" class="menu-grid">
+            <div class="item-grid" onclick="addItem('bebidas', 'Coca 2L', 12)">🥤 Coca 2L <small>R$ 12</small></div>
+            <div class="item-grid" onclick="addItem('bebidas', 'Coca Lata', 6)">🥫 Coca Lata <small>R$ 6</small></div>
+            <div class="item-grid" onclick="addItem('bebidas', 'Suco Lata', 7)">🧃 Suco Lata <small>R$ 7</small></div>
+        </div>
+        <div id="carrinhoBebidas"></div>
+    </div>
+
+    <div class="card">
+        <h2>💳 Pagamento</h2>
+        <select id="pagamento" onchange="pagamentoVer()">
+            <option value="Cartão">Cartão</option>
+            <option value="PIX">PIX</option>
+            <option value="Dinheiro">Dinheiro</option>
+        </select>
+
+        <input type="text" id="troco" class="hidden" placeholder="Troco para quanto?">
+
+        <div id="painelPix" class="pix-box hidden">
+            <span>Chave PIX (Telefone):</span>
+            <span class="pix-chave" id="chavePix">13997446989</span>
+            <button class="btn-copiar" onclick="copiarPix()">COPIAR CHAVE</button>
+            <span class="pix-aviso">⚠️ O pedido só será aceito após o envio do comprovante pelo WhatsApp.</span>
+        </div>
+    </div>
+
+    <div class="total-box">
+        <span>Total Geral</span><br>
+        <span class="total-val" id="resTotal">R$ 0,00</span>
+    </div>
+
+    <button class="btn-enviar" onclick="enviar()">🚀 ENVIAR PEDIDO</button>
+</div>
+
+<script>
+    let tam = 'grande', tipo = 'inteira', s1 = '', s2 = '';
+    let pedido = { esfihas: {}, porcoes: {}, bebidas: {} };
+
+    function toggleMenu(id) {
+        const m = document.getElementById(id);
+        const d = m.style.display;
+        document.querySelectorAll('.menu-grid').forEach(x => x.style.display = 'none');
+        m.style.display = d === 'grid' ? 'none' : 'grid';
+    }
+
+    function addItem(cat, nome, preco) {
+        if (!pedido[cat][nome]) {
+            pedido[cat][nome] = { qtd: 1, preco: preco };
+        } else {
+            pedido[cat][nome].qtd++;
+        }
+        renderCarrinho(cat);
+        document.querySelectorAll('.menu-grid').forEach(x => x.style.display = 'none');
+        calc();
+    }
+
+    function mudarQtd(cat, nome, delta) {
+        pedido[cat][nome].qtd += delta;
+        if (pedido[cat][nome].qtd <= 0) delete pedido[cat][nome];
+        renderCarrinho(cat);
+        calc();
+    }
+
+    function renderCarrinho(cat) {
+        const containers = { esfihas: 'carrinhoEsfihas', porcoes: 'carrinhoPorcoes', bebidas: 'carrinhoBebidas' };
+        const container = document.getElementById(containers[cat]);
+        container.innerHTML = '';
+        for (let nome in pedido[cat]) {
+            container.innerHTML += `
+                <div class="item-selecionado">
+                    <span><b>${nome}</b> (R$ ${(pedido[cat][nome].qtd * pedido[cat][nome].preco).toFixed(2)})</span>
+                    <div class="controles">
+                        <button class="btn-qtd" onclick="mudarQtd('${cat}', '${nome}', -1)">-</button>
+                        <span>${pedido[cat][nome].qtd}</span>
+                        <button class="btn-qtd" onclick="mudarQtd('${cat}', '${nome}', 1)">+</button>
+                    </div>
+                </div>`;
+        }
+    }
+
+    function setTamanho(t) { tam = t; document.getElementById('tG').classList.toggle('active', t==='grande'); document.getElementById('tB').classList.toggle('active', t==='broto'); calc(); }
+    function setTipo(ti) { 
+        tipo = ti; 
+        document.getElementById('bI').classList.toggle('active', ti==='inteira'); 
+        document.getElementById('bM').classList.toggle('active', ti==='meia'); 
+        document.getElementById('containerMeia').classList.toggle('hidden', ti==='inteira');
+        s1=''; s2=''; calc(); 
+    }
+    function escolherSabor(n, s) {
+        if(n===1) { s1=s; document.getElementById('btnSabor1').innerText = s; }
+        else { s2=s; document.getElementById('btnSabor2').innerText = s; }
+        document.getElementById('lista'+n).style.display = 'none';
+        calc();
+    }
+
+    function pagamentoVer() {
+        const p = document.getElementById('pagamento').value;
+        document.getElementById('troco').classList.toggle('hidden', p !== 'Dinheiro');
+        document.getElementById('painelPix').classList.toggle('hidden', p !== 'PIX');
+    }
+
+    function copiarPix() {
+        const chave = document.getElementById('chavePix').innerText;
+        navigator.clipboard.writeText(chave);
+        alert("Chave PIX copiada!");
+    }
+
+    window.onload = function() {
+        ['nome', 'tel', 'rua', 'numero', 'ref', 'bairro'].forEach(id => {
+            if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+        });
+        calc();
+    }
+
+    function calc() {
+        let total = parseFloat(document.getElementById('bairro').value) || 0;
+        if (s1) total += (tam==='grande' ? 40 : 25);
+        for (let cat in pedido) {
+            for (let item in pedido[cat]) {
+                total += (pedido[cat][item].qtd * pedido[cat][item].preco);
+            }
+        }
+        document.getElementById('resTotal').innerText = "R$ " + total.toFixed(2);
+        return total;
+    }
+
+    function enviar() {
+        const nome = document.getElementById('nome').value;
+        const rua = document.getElementById('rua').value;
+        const bairro = document.getElementById('bairro').options[document.getElementById('bairro').selectedIndex].text;
+        if(!nome || !rua || bairro.includes("Bairro")) return alert("Preencha os dados de entrega!");
+
+        ['nome', 'tel', 'rua', 'numero', 'ref', 'bairro'].forEach(id => localStorage.setItem(id, document.getElementById(id).value));
+
+        let msg = `*NOVO PEDIDO*%0A*Cliente:* ${nome}%0A*End:* ${rua} - ${bairro}%0A%0A`;
+        if(s1) msg += `*PIZZA ${tam.toUpperCase()}:* ${tipo==='inteira' ? s1 : s1 + ' / ' + s2}%0A*OBS:* ${document.getElementById('obsPizza').value}%0A%0A`;
+        
+        for (let cat in pedido) {
+            for (let item in pedido[cat]) {
+                msg += `*${item}:* ${pedido[cat][item].qtd}x%0A`;
+            }
+        }
+
+        msg += `%0A*TOTAL: R$ ${calc().toFixed(2)}*%0A*PAGAMENTO:* ${document.getElementById('pagamento').value}`;
+        if(document.getElementById('pagamento').value === 'Dinheiro') msg += `%0A*Troco para:* ${document.getElementById('troco').value}`;
+        
+        window.open(`https://wa.me/5513996963108?text=${msg}`);
+    }
+</script>
+</body>
+</html>
