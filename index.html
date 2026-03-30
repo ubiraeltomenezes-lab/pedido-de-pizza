@@ -3,44 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizzaria Express</title>
+    <title>Pizzaria Express - Pedido Online</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: white; padding: 15px; margin: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: hsl(95, 27%, 40%); color: white; padding: 15px; margin: 0; }
         .container { max-width: 500px; margin: auto; }
         .card { background: #2d2d2d; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #e63946; }
         h2 { color: #e63946; font-size: 1.1em; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; text-transform: uppercase; }
-        
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; background: #444; color: white; box-sizing: border-box; font-family: inherit; }
-        textarea { resize: none; height: 60px; border: 1px dashed #666; }
         
         .btn-categoria { width: 100%; background: #444; color: white; border: 2px solid #e63946; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; text-align: left; margin-bottom: 10px; position: relative; }
         .btn-categoria::after { content: '▼'; position: absolute; right: 15px; font-size: 0.8em; }
-
+        
         .tipo-selecao { display: flex; gap: 10px; margin-bottom: 10px; }
         .tipo-btn { flex: 1; padding: 10px; background: #444; border: 1px solid #666; color: white; border-radius: 5px; cursor: pointer; text-align: center; font-size: 0.85em; }
         .tipo-btn.active { background: #e63946; border-color: white; font-weight: bold; }
+        
+        /* Grid de Sabores com Scroll */
+        .menu-grid { display: none; background: #333; border-radius: 8px; padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; max-height: 350px; overflow-y: auto; border: 1px solid #444; }
+        .item-grid { background: #444; padding: 12px; border-radius: 5px; text-align: center; cursor: pointer; font-size: 0.75em; border: 1px solid #555; line-height: 1.2; }
+        .item-grid b { color: #e63946; display: block; margin-bottom: 3px; font-size: 1em; }
 
-        .menu-grid { display: none; background: #333; border-radius: 8px; padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .item-grid { background: #444; padding: 12px; border-radius: 5px; text-align: center; cursor: pointer; font-size: 0.9em; border: 1px solid #555; }
-        .item-grid small { display: block; color: #aaa; margin-top: 2px; }
-
-        .item-selecionado { display: flex; align-items: center; justify-content: space-between; background: #3d3d3d; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; animation: fadeIn 0.3s; }
+        .item-selecionado { background: #3d3d3d; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; }
         .controles { display: flex; align-items: center; gap: 15px; }
         .btn-qtd { background: #e63946; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
-        
         .flex { display: flex; gap: 10px; }
         .btn-enviar { width: 100%; background: #28a745; color: white; border: none; padding: 18px; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; margin-top: 10px; }
         .total-box { background: #e63946; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
-        .total-val { font-size: 1.8em; font-weight: bold; }
-        
-        /* Estilo Pix */
+        .notinha { background: #fff; color: #333; padding: 15px; border-radius: 8px; font-family: monospace; margin-bottom: 15px; border-left: 10px solid #ccc; font-size: 0.9em; }
         .pix-box { background: #1f1f1f; padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px dashed #00ffd5; text-align: center; }
-        .pix-chave { color: #00ffd5; font-weight: bold; font-size: 1.1em; word-break: break-all; margin: 10px 0; display: block; }
-        .btn-copiar { background: #00ffd5; color: black; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; font-weight: bold; cursor: pointer; }
-        .pix-aviso { color: #ffcc00; font-size: 0.8em; margin-top: 10px; display: block; font-style: italic; }
-
         .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #infoTroco { background: #3d3d3d; padding: 10px; border-radius: 8px; margin-top: 5px; font-size: 0.9em; border-left: 3px solid #ffcc00; }
+        strong { color: #edb935; }
     </style>
 </head>
 <body>
@@ -48,58 +41,78 @@
 <div class="container">
     <div class="card">
         <h2>👤 Dados de Entrega</h2>
-        <input type="text" id="nome" placeholder="Nome Completo">
-        <input type="tel" id="tel" placeholder="Telefone / WhatsApp">
-        <input type="text" id="rua" placeholder="Rua / Logradouro">
+        <input type="text" id="nome" placeholder="Nome Completo" oninput="saveData(this)">
+        <input type="tel" id="tel" placeholder="Telefone / WhatsApp" oninput="saveData(this)">
+        <input type="text" id="rua" placeholder="Rua / Logradouro" oninput="saveData(this)">
         <div class="flex">
-            <input type="text" id="numero" placeholder="Nº">
-            <select id="bairro" onchange="calc()">
-                <option value="0">Bairro</option>
+            <input type="text" id="numero" placeholder="Nº" oninput="saveData(this)">
+            <select id="bairro" onchange="calc(); saveData(this)">
+                <option value="0">Escolha o Bairro</option>
                 <option value="4">Quarenta (R$ 4)</option>
                 <option value="5">Gleba (R$ 5)</option>
             </select>
         </div>
-        <input type="text" id="ref" placeholder="Ponto de Referência">
+        <input type="text" id="ref" placeholder="Ponto de Referência" oninput="saveData(this)">
     </div>
 
     <div class="card">
-        <h2>🍕 Pizza</h2>
+        <h2>🍕 Pizzas</h2>
         <div class="tipo-selecao">
-            <div id="tG" class="tipo-btn active" onclick="setTamanho('grande')">Grande (R$ 40)</div>
-            <div id="tB" class="tipo-btn" onclick="setTamanho('broto')">Broto (R$ 25)</div>
+            <div id="tG" class="tipo-btn active" onclick="setTamanho('Grande', 40)">Grande (R$ 40)</div>
+            <div id="tB" class="tipo-btn" onclick="setTamanho('Broto', 25)">Broto (R$ 25)</div>
         </div>
         <div class="tipo-selecao">
             <div id="bI" class="tipo-btn active" onclick="setTipo('inteira')">Inteira</div>
             <div id="bM" class="tipo-btn" onclick="setTipo('meia')">Meia/Meia</div>
         </div>
 
+        <select id="bordaPizza">
+            <option value="0">Sem Borda Recheada</option>
+            <option value="5">Borda Catupiry (+R$ 5)</option>
+            <option value="5">Borda Cheddar (+R$ 5)</option>
+            <option value="7">Borda Chocolate (+R$ 7)</option>
+        </select>
+
         <button class="btn-categoria" id="btnSabor1" onclick="toggleMenu('lista1')">Escolher Sabor</button>
-        <div id="lista1" class="menu-grid">
-            <div class="item-grid" onclick="escolherSabor(1, 'Mussarela')">Mussarela</div>
-            <div class="item-grid" onclick="escolherSabor(1, 'Calabresa')">Calabresa</div>
-            <div class="item-grid" onclick="escolherSabor(1, 'Portuguesa')">Portuguesa</div>
-            <div class="item-grid" onclick="escolherSabor(1, 'Frango Catupiry')">Frango Catupiry</div>
-        </div>
+        <div id="lista1" class="menu-grid"></div>
 
         <div id="containerMeia" class="hidden">
             <button class="btn-categoria" id="btnSabor2" onclick="toggleMenu('lista2')">Escolher 2º Sabor</button>
-            <div id="lista2" class="menu-grid">
-                <div class="item-grid" onclick="escolherSabor(2, 'Mussarela')">Mussarela</div>
-                <div class="item-grid" onclick="escolherSabor(2, 'Calabresa')">Calabresa</div>
-                <div class="item-grid" onclick="escolherSabor(2, 'Portuguesa')">Portuguesa</div>
-                <div class="item-grid" onclick="escolherSabor(2, 'Frango Catupiry')">Frango Catupiry</div>
-            </div>
+            <div id="lista2" class="menu-grid"></div>
         </div>
-        <textarea id="obsPizza" placeholder="Obs na pizza..."></textarea>
+
+        <input type="text" id="obsPizza" placeholder="Obs: Sem cebola, bem assada...">
+
+        <button class="btn-enviar" style="background:#444; border: 1px solid #e63946; font-size: 0.9em;" onclick="addPizza()">➕ ADICIONAR PIZZA AO PEDIDO</button>
+        <div id="carrinhoPizzas"></div>
     </div>
 
     <div class="card">
-        <h2>🥟 Esfihas (R$ 5,00)</h2>
+        <h2>🥟 Esfihas </h2>
         <button class="btn-categoria" onclick="toggleMenu('menuEsfihas')">Adicionar Esfihas</button>
         <div id="menuEsfihas" class="menu-grid">
-            <div class="item-grid" onclick="addItem('esfihas', 'Carne', 5)">🥩 Carne</div>
-            <div class="item-grid" onclick="addItem('esfihas', 'Queijo', 5)">🧀 Queijo</div>
-            <div class="item-grid" onclick="addItem('esfihas', 'Frango', 5)">🍗 Frango</div>
+            <div class="item-grid" onclick="addItem('Esfiha mussarela', 5)"> mussarela R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha napolitana', 5)">napolitana R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha marguerita', 5)">marguerita R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha calabresa', 5)"> Calabresa R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha mesclada', 5)">mesclada R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha brocolis', 5)"> Brocolis R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha atum', 8)"> Atum R$ 8</div>
+            <div class="item-grid" onclick="addItem('Esfiha bacon', 5)"> bacon R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha dois Queijo', 5)"> 2 Queijo R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha  4 Queijo', 6)"> 4 Queijo R$ 6</div>
+            <div class="item-grid" onclick="addItem('Esfiha frango', 5)"> frango com catupiry R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha lombo', 7)"> lombo 2 R$ 7</div>
+            <div class="item-grid" onclick="addItem('Esfiha caipira', 5)">caipira R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha mimosa', 5)">mimosa R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha santista', 8)">santista R$ 8</div>
+            <div class="item-grid" onclick="addItem('Esfiha bauru', 5)">bauru R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha portuguesa', 8)">portuguesa R$ 8</div>
+            <div class="item-grid" onclick="addItem('Esfiha chocolate', 5)">chocolate R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha granulado', 5)">granulado R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha confete', 5)">confete R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha banana', 5)"> Banana nevada R$ 5</div>
+            <div class="item-grid" onclick="addItem('Esfiha banana2', 5)"> Banana com chocolate R$ 5</div>
         </div>
         <div id="carrinhoEsfihas"></div>
     </div>
@@ -108,9 +121,21 @@
         <h2>🍟 Porções</h2>
         <button class="btn-categoria" onclick="toggleMenu('menuPorcoes')">Adicionar Porções</button>
         <div id="menuPorcoes" class="menu-grid">
-            <div class="item-grid" onclick="addItem('porcoes', 'Batata Frita', 25)">🍟 Batata <small>R$ 25</small></div>
-            <div class="item-grid" onclick="addItem('porcoes', 'Frango Pass.', 35)">🍗 Frango <small>R$ 35</small></div>
-            <div class="item-grid" onclick="addItem('porcoes', 'Calabresa', 30)">🥓 Calabresa <small>R$ 30</small></div>
+            <div class="item-grid" onclick="addItem('Batata Frita media', 20)"> Batata <strong>M</strong>(R$20)</div>
+            <div class="item-grid" onclick="addItem('Batata frita grande', 30)"> batata grande <strong>G</strong> (R$30)</div>
+            <div class="item-grid" onclick="addItem('calabresa acebolada.', 25)"> calabresa acebolada <strong>M</strong> (R$25)</div>
+            <div class="item-grid" onclick="addItem('calabresa acebolada.', 30)">calabresa acebolada <strong>G</strong> (R$30)</div>
+            <div class="item-grid" onclick="addItem('calabresa com fritas media.', 30)"> calabresacom fritas<strong>M</strong> (R$30)</div>
+            <div class="item-grid" onclick="addItem('calabresa com fritas grande.', 40)">calabresa com fritas <strong>G</strong> (R$40)</div>
+            <div class="item-grid" onclick="addItem('contra  acebolado media', 50)"> contra file acebolado <strong>M</strong> (R$50)</div>
+            <div class="item-grid" onclick="addItem('contra  acebolado grande', 60)">contra file acebolado<strong>G</strong> (R$60)</div>
+            <div class="item-grid" onclick="addItem('contra fritas media', 60)">contra com fritas <strong>M</strong> (R$60)</div>
+            <div class="item-grid" onclick="addItem('contra fritas grande', 70)">contra com fritas <strong>G</strong> (R$70)</div>
+            <div class="item-grid" onclick="addItem('Frango Pass media', 50)"> Frango com fritas<strong>M</strong> (R$50)</div>
+            <div class="item-grid" onclick="addItem('Frango Pass grande', 65)"> Frango com fritas<strong>G</strong> (R$65)</div>
+            <div class="item-grid" onclick="addItem('contra completo2.', 100)"> contra completo <strong>G</strong>(R$100)</div>
+                <div class="item-grid" onclick="addItem('Frango completo2.', 100)"> Frango completo<strong>G</strong> (R$100)</div>
+              
         </div>
         <div id="carrinhoPorcoes"></div>
     </div>
@@ -119,153 +144,314 @@
         <h2>🥤 Bebidas</h2>
         <button class="btn-categoria" onclick="toggleMenu('menuBebidas')">Adicionar Bebidas</button>
         <div id="menuBebidas" class="menu-grid">
-            <div class="item-grid" onclick="addItem('bebidas', 'Coca 2L', 12)">🥤 Coca 2L <small>R$ 12</small></div>
-            <div class="item-grid" onclick="addItem('bebidas', 'Coca Lata', 6)">🥫 Coca Lata <small>R$ 6</small></div>
-            <div class="item-grid" onclick="addItem('bebidas', 'Suco Lata', 7)">🧃 Suco Lata <small>R$ 7</small></div>
+            <div class="item-grid" onclick="addItem('Coca 2L', 15)">🥤 Coca 2L <strong>(R$15) </strong></div>
+             <div class="item-grid" onclick="addItem('Coca zero2L', 15)">🥤 Coca zero2L <strong>(R$15)</strong></div>
+              <div class="item-grid" onclick="addItem('fanta laranja 2L', 12)">🥤 Fanta Laranja 2L <strong>(R$12)</strong></div>
+               <div class="item-grid" onclick="addItem('fanta uva 2L', 12)">🥤 Fanta Uva 2L <strong>(R$12)</strong></div>
+                <div class="item-grid" onclick="addItem('guaraná antartica 2L', 12)">🥤 Guarana antartica 2L <strong>(R$12)</strong></div>
+                 <div class="item-grid" onclick="addItem('it guaraná 2L', 8)">🥤 it Guarana 2L <strong>(R$8)</strong></div>
+                  <div class="item-grid" onclick="addItem('it laranja 2L', 8)">🥤 it Laranja 2L <strong>(R$8)</strong></div>
+                   <div class="item-grid" onclick="addItem('it limão 2L', 8)">🥤 it Limão 2L <strong>(R$8)</strong></div>
+              <div class="item-grid" onclick="addItem('Coca lata ', 5)">🥤 Coca lata <strong>(R$5)</strong></div>
+           <div class="item-grid" onclick="addItem('Coca 600ml', 7)">🥤 Coca 600ml <strong>(R$7)</strong></div>
+            <div class="item-grid" onclick="addItem('guaraná 600ml', 7)">🥤 Guarana 600ml <strong>(R$7)</strong></div>
+            <div class="item-grid" onclick="addItem('guaraviton', 5)">🥤 Guaraviton  <strong>(R$5)</strong></div>
+            <div class="item-grid" onclick="addItem('del valle lata ', 5)">🥤 Del Valle  lata<strong>(R$5)</strong></div>
+              <div class="item-grid" onclick="addItem('del valle 1L', 12)">🥤 Del Valle caixa 1L <strong>(R$12) </strong></div>
+              <div class="item-grid" onclick="addItem('agua pequena ', 2)">🥤 Água Pequena <strong>(R$2)</strong></div>
+            <div class="item-grid" onclick="addItem('original 269', 5)">🥤 Original 269 <strong>(R$5)</strong></div>
+             <div class="item-grid" onclick="addItem('skol 269', 5)">🥤 Skol 269 <strong>(R$5)</strong></div>
         </div>
         <div id="carrinhoBebidas"></div>
     </div>
 
     <div class="card">
         <h2>💳 Pagamento</h2>
-        <select id="pagamento" onchange="pagamentoVer()">
+        <select id="pagamento" onchange="verPix(); atualizarTroco()">
             <option value="Cartão">Cartão</option>
-            <option value="PIX">PIX</option>
             <option value="Dinheiro">Dinheiro</option>
+            <option value="PIX">PIX</option>
         </select>
-
-        <input type="text" id="troco" class="hidden" placeholder="Troco para quanto?">
-
-        <div id="painelPix" class="pix-box hidden">
-            <span>Chave PIX (Telefone):</span>
-            <span class="pix-chave" id="chavePix">13997446989</span>
-            <button class="btn-copiar" onclick="copiarPix()">COPIAR CHAVE</button>
-            <span class="pix-aviso">⚠️ O pedido só será aceito após o envio do comprovante pelo WhatsApp.</span>
+        <div id="sessaoTroco" class="hidden">
+    <input type="number" id="valorCliente" value="0" placeholder="Troco para quanto? (Ex: 100)" oninput="atualizarTroco()">
+    <div id="infoTroco" class="hidden"></div>
+</div>
         </div>
+        <div id="painelPix" class="pix-box hidden" onclick="copiarPix()" style="cursor: pointer;">
+    Chave PIX (Clique para copiar): <br>
+    <b id="chavePix">13997446989</b>
+</div>
     </div>
 
-    <div class="total-box">
-        <span>Total Geral</span><br>
-        <span class="total-val" id="resTotal">R$ 0,00</span>
+    <div class="notinha" id="resumoNotinha">
+        <b>RESUMO DO PEDIDO:</b><br>
+        <span>Nenhum item selecionado.</span>
     </div>
 
-    <button class="btn-enviar" onclick="enviar()">🚀 ENVIAR PEDIDO</button>
+    <div class="total-box">Total: <b id="resTotal">R$ 0,00</b></div>
+    <button class="btn-enviar" onclick="enviar()">🚀 ENVIAR PARA O WHATSAPP</button>
 </div>
 
 <script>
-    let tam = 'grande', tipo = 'inteira', s1 = '', s2 = '';
-    let pedido = { esfihas: {}, porcoes: {}, bebidas: {} };
+    // LISTA COMPLETA DE SABORES
+    const listaSabores = [
+        {id: 1, nome: "Calabresa", desc: "calabresa com cebola"},
+        {id: 2, nome: "Calabresa II", desc: "calabresa com batata palha"},
+        {id: 3, nome: "Calabresa III", desc: "calabresa com catupiry"},
+        {id: 4, nome: "Calabresa IV", desc: "calabresa com cheddar"},
+        {id: 5, nome: "Presunto I", desc: "presunto com catupiry e batata palha"},
+        {id: 6, nome: "Presunto II", desc: "presunto com cheddar"},
+        {id: 7, nome: "Presunto III", desc: "presuntos, cebola e milho"},
+        {id: 10, nome: "Catumilho", desc: "catupiry com milho"},
+        {id: 11, nome: "Mussarela", desc: "tomate"},
+        {id: 12, nome: "Napolitana", desc: "mussarela, parmesão, tomate"},
+        {id: 13, nome: "Marguerita", desc: "mussarela, tomate, manjericão"},
+        {id: 14, nome: "Dois Queijos", desc: "mussarela, catupiry"},
+        {id: 15, nome: "Roma", desc: "mussarela, presunto, ovos"},
+        {id: 16, nome: "Atum", desc: "cebola"},
+        {id: 17, nome: "Poderosa I", desc: "mussarela, calabresa, catupiry"},
+        {id: 18, nome: "Poderosa II", desc: "mussarela, calabresa, cheddar"},
+        {id: 19, nome: "Poderosa III", desc: "mussarela, calabresa, parmesão, tom"},
+        {id: 20, nome: "Baiana", desc: "mussarela, calabresa moída, pimenta"},
+        {id: 21, nome: "Bacon", desc: "mussarela ou catupiry"},
+        {id: 22, nome: "Bauru", desc: "mussarela, presunto, tomate"},
+        {id: 23, nome: "Francesa", desc: "mussarela, batata palha"},
+        {id: 24, nome: "Suprema", desc: "mussarela, presunto, catupiry"},
+        {id: 25, nome: "Mesclada", desc: "mussarela com fatias de calabresa"},
+        {id: 26, nome: "Gramuth", desc: "mussarela, ovos, presunto, ervilha, cebola"},
+        {id: 27, nome: "Lombo I", desc: "lombo, catupiry, alho"},
+        {id: 28, nome: "Lombo II", desc: "lombo, mussarela, catupiry, bacon, alho"},
+        {id: 29, nome: "Lombo III", desc: "lombo, palmito, mussarela, catupiry, alho"},
+        {id: 30, nome: "Lombo Nobre", desc: "lombo, calabresa, catupiry"},
+        {id: 31, nome: "Brócolis", desc: "brócolis, mussarela, alho"},
+        {id: 32, nome: "Brócolis Super", desc: "brócolis, palmito, milho, mussarela"},
+        {id: 33, nome: "Brócolis Especial", desc: "brócolis, mussarela, bacon, alho"},
+        {id: 34, nome: "Frango", desc: "frango, catupiry"},
+        {id: 35, nome: "Calafrango", desc: "frango, calabresa, catupiry"},
+        {id: 36, nome: "Crocante", desc: "frango, catupiry, batata palha"},
+        {id: 37, nome: "Mimosa", desc: "frango, catupiry, bacon"},
+        {id: 38, nome: "Caipira", desc: "frango, catupiry, milho"},
+        {id: 39, nome: "Do Chefe", desc: "frango, mussarela, catupiry"},
+        {id: 40, nome: "Frangão", desc: "frango, presunto, mussarela, catupiry"},
+        {id: 41, nome: "Monteneve", desc: "frango, catupiry, champignon, molho rosê"},
+        {id: 42, nome: "Paulista", desc: "mussarela, calabresa, cebola"},
+        {id: 43, nome: "Toscana", desc: "calabresa, cebola, catupiry, bacon"},
+        {id: 44, nome: "Mexicana", desc: "catupiry, calabresa moída, bacon, pimenta"},
+        {id: 45, nome: "Calabresa Super", desc: "calabresa, mussarela, ovos, catupiry, tomate, parmesão"},
+        {id: 46, nome: "Santista I", desc: "atum, mussarela, cebola"},
+        {id: 47, nome: "Santista II", desc: "atum, palmito, mussarela, alho"},
+        {id: 48, nome: "Santista III", desc: "atum, lombo, mussarela, catupiry"},
+        {id: 49, nome: "Kabulosa", desc: "calabresa, ovos, cheddar, tomate"},
+        {id: 50, nome: "Mineira", desc: "mussarela, milho, bacon, parmesão"},
+        {id: 51, nome: "Capricho", desc: "catupiry, calabresa, milho"},
+        {id: 52, nome: "Champignon", desc: "molho rosê, catupiry ou mussarela"},
+        {id: 53, nome: "Três Queijos", desc: "mussarela, catupiry, parmesão"},
+        {id: 54, nome: "Bacon Especial", desc: "bacon, mussarela, cheddar"},
+        
+        
+        
+        {id: 58, nome: "Peperoni", desc: "muçarela, pepperoni"},
+        {id: 59, nome: "Portuguesa", desc: "presunto, ervilha, ovos, cebola, palm., muçarela"},
+        {id: 60, nome: "Quatro Queijos", desc: "muçarela, catupiry, parmesão, provolone"},
+        {id: 61, nome: "Gostosa", desc: "muçarela, presunto, calabresa, catupiry"},
+        {id: 62, nome: "Siciliana", desc: "champignon temperado, muçarela, bacon"},
+        {id: 63, nome: "Tomate Seco", desc: "tomate seco, muçarela, bacon"},
+        {id: 64, nome: "Gratinada", desc: "presunto, mussar., catupiry, tomate, parmesão"},
+        {id: 65, nome: "Jorge Tadeu", desc: "mussarela, presunto, catupiry, champignon, calabresa"},
+        {id: 66, nome: "Cinco Queijos", desc: "mussarela, catupiry, parmesão, gorgonzola, provolone"},
+        {id: 67, nome: "Frango Super I", desc: "frango, ervilha, milho, catupiry, calabresa"},
+        {id: 68, nome: "Palmito Especial", desc: "palmito, mussarela, catupiry, bacon"},
+        {id: 69, nome: "Palmito Super", desc: "palmito, catupiry, mussarela, bacon, tomate seco"},
+        {id: 70, nome: "A Nova Mondialle", desc: "lombo, mussarela, catupiry, tomate seco, bacon"},
+        {id: 72, nome: "Portuguesa Especial", desc: "mussarela, presunto, ovos, cebola, ervilha, palmito, bacon"},
+        {id: 73, nome: "Portuguesa Super", desc: "mussarela, presunto, ovos, cebola, ervilha, palmito, bacon, calabresa"},
+        
+        {id: 82, nome: "Brigadeiro", desc: "chocolate, granulado"},
+        {id: 83, nome: "Confete", desc: "chocolate, confete"},
+        {id: 84, nome: "Romeu e Julieta", desc: "mussarela, goiabada"},
+        {id: 85, nome: "Banana I", desc: "banana, creme de leite, canela"},
+        {id: 86, nome: "Banana II", desc: "banana, mussarela, canela"},
+        {id: 87, nome: "Banana III", desc: "banana, chocolate"},
+        {id: 88, nome: "Banana Nevada", desc: "Banana, chocolate branco"},
+        {id: 89, nome: "Chocolate com Uva", desc: "Chocolate com uva"}
+    ];
+
+    let pizzaAtual = { tam: 'Grande', preco: 40, tipo: 'inteira', s1: '', s2: '' };
+    let pizzas = []; let extras = {};
+
+    function saveData(el) { localStorage.setItem(el.id, el.value); }
+
+    window.onload = () => {
+        ['nome', 'tel', 'rua', 'numero', 'bairro', 'ref'].forEach(f => {
+            let val = localStorage.getItem(f);
+            if(val) document.getElementById(f).value = val;
+        });
+        
+        // Carrega os sabores nos menus
+        const menu1 = document.getElementById('lista1');
+        const menu2 = document.getElementById('lista2');
+        let htmlSabores = "";
+        listaSabores.forEach(s => {
+            htmlSabores += `<div class="item-grid" onclick="selecionarSabor(${s.id === 1 || s.id === 2 ? (menu1.style.display === 'grid' ? 1 : 1) : 1}, '${s.nome}')"><b>${s.id} - ${s.nome}</b><span>(${s.desc})</span></div>`;
+        });
+        // Injeta o HTML nos dois menus
+        menu1.innerHTML = htmlSabores;
+        menu2.innerHTML = htmlSabores;
+
+        calc();
+    };
 
     function toggleMenu(id) {
-        const m = document.getElementById(id);
-        const d = m.style.display;
-        document.querySelectorAll('.menu-grid').forEach(x => x.style.display = 'none');
-        m.style.display = d === 'grid' ? 'none' : 'grid';
+        let m = document.getElementById(id);
+        document.querySelectorAll('.menu-grid').forEach(x => { if(x.id!==id) x.style.display='none'; });
+        m.style.display = m.style.display==='grid' ? 'none' : 'grid';
     }
 
-    function addItem(cat, nome, preco) {
-        if (!pedido[cat][nome]) {
-            pedido[cat][nome] = { qtd: 1, preco: preco };
+    function setTamanho(t,p) { pizzaAtual.tam=t; pizzaAtual.preco=p; document.getElementById('tG').classList.toggle('active', t==='Grande'); document.getElementById('tB').classList.toggle('active', t==='Broto'); calc(); }
+    function setTipo(ti) { pizzaAtual.tipo=ti; document.getElementById('bI').classList.toggle('active', ti==='inteira'); document.getElementById('bM').classList.toggle('active', ti==='meia'); document.getElementById('containerMeia').classList.toggle('hidden', ti==='inteira'); }
+    
+    function selecionarSabor(num, s) { 
+        // Lógica inteligente para saber qual botão foi clicado
+        if(document.getElementById('lista1').style.display === 'grid') {
+            pizzaAtual.s1 = s;
+            document.getElementById('btnSabor1').innerText = s;
+            toggleMenu('lista1');
         } else {
-            pedido[cat][nome].qtd++;
-        }
-        renderCarrinho(cat);
-        document.querySelectorAll('.menu-grid').forEach(x => x.style.display = 'none');
-        calc();
-    }
-
-    function mudarQtd(cat, nome, delta) {
-        pedido[cat][nome].qtd += delta;
-        if (pedido[cat][nome].qtd <= 0) delete pedido[cat][nome];
-        renderCarrinho(cat);
-        calc();
-    }
-
-    function renderCarrinho(cat) {
-        const containers = { esfihas: 'carrinhoEsfihas', porcoes: 'carrinhoPorcoes', bebidas: 'carrinhoBebidas' };
-        const container = document.getElementById(containers[cat]);
-        container.innerHTML = '';
-        for (let nome in pedido[cat]) {
-            container.innerHTML += `
-                <div class="item-selecionado">
-                    <span><b>${nome}</b> (R$ ${(pedido[cat][nome].qtd * pedido[cat][nome].preco).toFixed(2)})</span>
-                    <div class="controles">
-                        <button class="btn-qtd" onclick="mudarQtd('${cat}', '${nome}', -1)">-</button>
-                        <span>${pedido[cat][nome].qtd}</span>
-                        <button class="btn-qtd" onclick="mudarQtd('${cat}', '${nome}', 1)">+</button>
-                    </div>
-                </div>`;
+            pizzaAtual.s2 = s;
+            document.getElementById('btnSabor2').innerText = s;
+            toggleMenu('lista2');
         }
     }
 
-    function setTamanho(t) { tam = t; document.getElementById('tG').classList.toggle('active', t==='grande'); document.getElementById('tB').classList.toggle('active', t==='broto'); calc(); }
-    function setTipo(ti) { 
-        tipo = ti; 
-        document.getElementById('bI').classList.toggle('active', ti==='inteira'); 
-        document.getElementById('bM').classList.toggle('active', ti==='meia'); 
-        document.getElementById('containerMeia').classList.toggle('hidden', ti==='inteira');
-        s1=''; s2=''; calc(); 
-    }
-    function escolherSabor(n, s) {
-        if(n===1) { s1=s; document.getElementById('btnSabor1').innerText = s; }
-        else { s2=s; document.getElementById('btnSabor2').innerText = s; }
-        document.getElementById('lista'+n).style.display = 'none';
-        calc();
-    }
+    function addPizza() {
+        if(!pizzaAtual.s1 || (pizzaAtual.tipo==='meia' && !pizzaAtual.s2)) return alert("Escolha o sabor!");
+        
+        let valorBorda = parseFloat(document.getElementById('bordaPizza').value);
+        let nomeBorda = document.getElementById('bordaPizza').options[document.getElementById('bordaPizza').selectedIndex].text;
+        let obs = document.getElementById('obsPizza').value;
 
-    function pagamentoVer() {
-        const p = document.getElementById('pagamento').value;
-        document.getElementById('troco').classList.toggle('hidden', p !== 'Dinheiro');
-        document.getElementById('painelPix').classList.toggle('hidden', p !== 'PIX');
-    }
+        let nomeCompleto = `Pizza ${pizzaAtual.tam} (${pizzaAtual.tipo==='inteira'?pizzaAtual.s1:pizzaAtual.s1+'/'+pizzaAtual.s2})`;
+        if(valorBorda > 0) nomeCompleto += ` + ${nomeBorda}`;
 
-    function copiarPix() {
-        const chave = document.getElementById('chavePix').innerText;
-        navigator.clipboard.writeText(chave);
-        alert("Chave PIX copiada!");
-    }
-
-    window.onload = function() {
-        ['nome', 'tel', 'rua', 'numero', 'ref', 'bairro'].forEach(id => {
-            if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+        pizzas.push({ 
+            nome: nomeCompleto, 
+            preco: pizzaAtual.preco + valorBorda,
+            obs: obs 
         });
-        calc();
+
+        // Reset
+        pizzaAtual.s1=''; pizzaAtual.s2=''; 
+        document.getElementById('btnSabor1').innerText='Escolher Sabor'; 
+        document.getElementById('btnSabor2').innerText='Escolher 2º Sabor';
+        document.getElementById('obsPizza').value = '';
+        document.getElementById('bordaPizza').value = '0';
+        renderPizzas(); calc();
+    }
+
+    function addItem(n, p) { extras[n] = extras[n] || { qtd: 0, preco: p }; extras[n].qtd++; renderExtras(); calc(); }
+    function mudarExtra(n, d) { extras[n].qtd+=d; if(extras[n].qtd<=0) delete extras[n]; renderExtras(); calc(); }
+    function removerPizza(i) { pizzas.splice(i,1); renderPizzas(); calc(); }
+
+    function renderPizzas() {
+        let h=''; pizzas.forEach((p,i)=> {
+            h+=`<div class="item-selecionado">
+                <span><b>${p.nome}</b>${p.obs ? '<br><small>Obs: '+p.obs+'</small>' : ''}</span>
+                <button class="btn-qtd" onclick="removerPizza(${i})">X</button>
+            </div>`;
+        });
+        document.getElementById('carrinhoPizzas').innerHTML = h;
+    }
+
+    function renderExtras() {
+        document.getElementById('carrinhoEsfihas').innerHTML = ''; document.getElementById('carrinhoPorcoes').innerHTML = ''; document.getElementById('carrinhoBebidas').innerHTML = '';
+        for (let n in extras) {
+            let catId = n.includes('Esfiha') ? 'carrinhoEsfihas' : (n.includes('Coca') ? 'carrinhoBebidas' : 'carrinhoPorcoes');
+            document.getElementById(catId).innerHTML += `<div class="item-selecionado"><span>${n} (x${extras[n].qtd})</span><div class="controles"><button class="btn-qtd" onclick="mudarExtra('${n}',-1)">-</button><button class="btn-qtd" onclick="mudarExtra('${n}',1)">+</button></div></div>`;
+        }
+    }
+
+    function verPix() { 
+        let pag = document.getElementById('pagamento').value;
+        document.getElementById('painelPix').classList.toggle('hidden', pag!=='PIX'); 
+        document.getElementById('sessaoTroco').classList.toggle('hidden', pag!=='Dinheiro'); 
+    }
+
+    function atualizarTroco() {
+        let total = calc();
+        let valorCliente = parseFloat(document.getElementById('valorCliente').value);
+        let info = document.getElementById('infoTroco');
+        if (valorCliente > total) {
+            info.innerHTML = `O troco será de: <b>R$ ${(valorCliente - total).toFixed(2)}</b>`;
+            info.classList.remove('hidden');
+        } else { info.classList.add('hidden'); }
     }
 
     function calc() {
-        let total = parseFloat(document.getElementById('bairro').value) || 0;
-        if (s1) total += (tam==='grande' ? 40 : 25);
-        for (let cat in pedido) {
-            for (let item in pedido[cat]) {
-                total += (pedido[cat][item].qtd * pedido[cat][item].preco);
-            }
-        }
+        let taxa = parseFloat(document.getElementById('bairro').value) || 0;
+        let total = taxa;
+        let resumo = "<b>RESUMO DO PEDIDO:</b><br>";
+        pizzas.forEach(p => { resumo += `• ${p.nome}: R$ ${p.preco.toFixed(2)}<br>`; total += p.preco; });
+        for (let n in extras) { resumo += `• ${n} (x${extras[n].qtd}): R$ ${(extras[n].qtd * extras[n].preco).toFixed(2)}<br>`; total += (extras[n].qtd * extras[n].preco); }
+        if(taxa > 0) resumo += `Taxa de Entrega: R$ ${taxa.toFixed(2)}<br>`;
+        document.getElementById('resumoNotinha').innerHTML = total > taxa ? resumo : "Nenhum item selecionado.";
         document.getElementById('resTotal').innerText = "R$ " + total.toFixed(2);
         return total;
     }
+    function copiarPix() {
+    // Pega o texto da chave
+    const chave = document.getElementById('chavePix').innerText;
+    
+    // Copia para a área de transferência
+    navigator.clipboard.writeText(chave).then(() => {
+        // Alerta o cliente que deu certo
+        alert("Chave PIX copiada com sucesso!");
+    }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+    });
+}
 
     function enviar() {
-        const nome = document.getElementById('nome').value;
-        const rua = document.getElementById('rua').value;
-        const bairro = document.getElementById('bairro').options[document.getElementById('bairro').selectedIndex].text;
-        if(!nome || !rua || bairro.includes("Bairro")) return alert("Preencha os dados de entrega!");
+    let n = document.getElementById('nome').value;
+    let r = document.getElementById('rua').value;
+    let b = document.getElementById('bairro').options[document.getElementById('bairro').selectedIndex].text;
+    let total = calc();
+    
+    // Validações básicas
+    if(!n || !r || b.includes("Escolha")) return alert("Preencha Nome, Rua e Bairro!");
+    if(pizzas.length === 0 && Object.keys(extras).length === 0) return alert("Seu carrinho está vazio!");
+    
+    let pag = document.getElementById('pagamento').value;
+    let infoPag = `*Pgto:* ${pag}`;
 
-        ['nome', 'tel', 'rua', 'numero', 'ref', 'bairro'].forEach(id => localStorage.setItem(id, document.getElementById(id).value));
+    // NOVA VALIDAÇÃO DE TROCO
+    if(pag === 'Dinheiro') {
+        let campoTroco = document.getElementById('valorCliente').value;
+        let vCli = parseFloat(campoTroco);
 
-        let msg = `*NOVO PEDIDO*%0A*Cliente:* ${nome}%0A*End:* ${rua} - ${bairro}%0A%0A`;
-        if(s1) msg += `*PIZZA ${tam.toUpperCase()}:* ${tipo==='inteira' ? s1 : s1 + ' / ' + s2}%0A*OBS:* ${document.getElementById('obsPizza').value}%0A%0A`;
-        
-        for (let cat in pedido) {
-            for (let item in pedido[cat]) {
-                msg += `*${item}:* ${pedido[cat][item].qtd}x%0A`;
-            }
+        if(campoTroco === "" || isNaN(vCli)) {
+            return alert("Por favor, informe se precisa de troco. Digite o valor ou '0' para não precisar.");
         }
 
-        msg += `%0A*TOTAL: R$ ${calc().toFixed(2)}*%0A*PAGAMENTO:* ${document.getElementById('pagamento').value}`;
-        if(document.getElementById('pagamento').value === 'Dinheiro') msg += `%0A*Troco para:* ${document.getElementById('troco').value}`;
-        
-        window.open(`https://wa.me/5513996963108?text=${msg}`);
+        if(vCli > total) {
+            infoPag += ` (Paga com R$ ${vCli.toFixed(2)} | Troco: R$ ${(vCli-total).toFixed(2)})`;
+        } else if (vCli === 0) {
+            infoPag += ` (Não precisa de troco)`;
+        } else if (vCli < total && vCli !== 0) {
+            return alert("O valor para troco não pode ser menor que o total do pedido!");
+        }
     }
+
+    // Montagem da mensagem (Igual ao seu código anterior)
+    let msg = `*NOVO PEDIDO*\n*Cliente:* ${n}\n*End:* ${r}, ${document.getElementById('numero').value}\n*Bairro:* ${b}\n*Ref:* ${document.getElementById('ref').value}\n\n*ITENS:*\n`;
+    pizzas.forEach(p => {
+        msg += `- ${p.nome} (R$ ${p.preco.toFixed(2)})\n`;
+        if(p.obs) msg += `  └ Obs: ${p.obs}\n`;
+    });
+    for (let it in extras) msg += `- ${it} x${extras[it].qtd} (R$ ${(extras[it].qtd*extras[it].preco).toFixed(2)})\n`;
+    msg += `\n*TOTAL: R$ ${total.toFixed(2)}*\n${infoPag}`;
+    
+    window.open(`https://wa.me/5513996963108?text=${encodeURIComponent(msg)}`);
+}
 </script>
 </body>
 </html>
