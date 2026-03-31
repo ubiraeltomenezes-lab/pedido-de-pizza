@@ -18,17 +18,16 @@
         .tipo-btn { flex: 1; padding: 10px; background: #444; border: 1px solid #666; color: white; border-radius: 5px; cursor: pointer; text-align: center; font-size: 0.85em; }
         .tipo-btn.active { background: #e63946; border-color: white; font-weight: bold; }
         
-        /* Grid de Sabores com Scroll */
         .menu-grid { display: none; background: #333; border-radius: 8px; padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; max-height: 350px; overflow-y: auto; border: 1px solid #444; }
         .item-grid { background: #444; padding: 12px; border-radius: 5px; text-align: center; cursor: pointer; font-size: 0.75em; border: 1px solid #555; line-height: 1.2; }
         .item-grid b { color: #e63946; display: block; margin-bottom: 3px; font-size: 1em; }
 
-        .item-selecionado { background: #3d3d3d; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; }
-        .controles { display: flex; align-items: center; gap: 15px; }
+        .item-selecionado { background: #3d3d3d; padding: 10px; border-radius: 8px; margin-top: 8px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center; }
+        .controles { display: flex; align-items: center; gap: 10px; }
         .btn-qtd { background: #e63946; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; }
         .flex { display: flex; gap: 10px; }
         .btn-enviar { width: 100%; background: #28a745; color: white; border: none; padding: 18px; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; margin-top: 10px; }
-        .total-box { background: #e63946; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .total-box { background: #e63946; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; font-size: 1.2em; font-weight: bold; }
         .notinha { background: #fff; color: #333; padding: 15px; border-radius: 8px; font-family: monospace; margin-bottom: 15px; border-left: 10px solid #ccc; font-size: 0.9em; }
         .pix-box { background: #1f1f1f; padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px dashed #00ffd5; text-align: center; }
         .hidden { display: none !important; }
@@ -82,13 +81,12 @@
         </div>
 
         <input type="text" id="obsPizza" placeholder="Obs: Sem cebola, bem assada...">
-
         <button class="btn-enviar" style="background:#444; border: 1px solid #e63946; font-size: 0.9em;" onclick="addPizza()">➕ ADICIONAR PIZZA AO PEDIDO</button>
         <div id="carrinhoPizzas"></div>
     </div>
 
     <div class="card">
-        <h2>🥟 Esfihas </h2>
+        <h2>🥟 Esfihas</h2>
         <button class="btn-categoria" onclick="toggleMenu('menuEsfihas')">Adicionar Esfihas</button>
         <div id="menuEsfihas" class="menu-grid">
             <div class="item-grid" onclick="addItem('Esfiha mussarela', 5)"> mussarela R$ 5</div>
@@ -100,7 +98,7 @@
             <div class="item-grid" onclick="addItem('Esfiha atum', 8)"> Atum R$ 8</div>
             <div class="item-grid" onclick="addItem('Esfiha bacon', 5)"> bacon R$ 5</div>
             <div class="item-grid" onclick="addItem('Esfiha dois Queijo', 5)"> 2 Queijo R$ 5</div>
-            <div class="item-grid" onclick="addItem('Esfiha  4 Queijo', 6)"> 4 Queijo R$ 6</div>
+            <div class="item-grid" onclick="addItem('Esfiha 4 Queijo', 6)"> 4 Queijo R$ 6</div>
             <div class="item-grid" onclick="addItem('Esfiha frango', 5)"> frango com catupiry R$ 5</div>
             <div class="item-grid" onclick="addItem('Esfiha lombo', 7)"> lombo 2 R$ 7</div>
             <div class="item-grid" onclick="addItem('Esfiha caipira', 5)">caipira R$ 5</div>
@@ -121,21 +119,20 @@
         <h2>🍟 Porções</h2>
         <button class="btn-categoria" onclick="toggleMenu('menuPorcoes')">Adicionar Porções</button>
         <div id="menuPorcoes" class="menu-grid">
-            <div class="item-grid" onclick="addItem('Batata Frita media', 20)"> Batata <strong>M</strong>(R$20)</div>
-            <div class="item-grid" onclick="addItem('Batata frita grande', 30)"> batata grande <strong>G</strong> (R$30)</div>
-            <div class="item-grid" onclick="addItem('calabresa acebolada.', 25)"> calabresa acebolada <strong>M</strong> (R$25)</div>
-            <div class="item-grid" onclick="addItem('calabresa acebolada.', 30)">calabresa acebolada <strong>G</strong> (R$30)</div>
-            <div class="item-grid" onclick="addItem('calabresa com fritas media.', 30)"> calabresacom fritas<strong>M</strong> (R$30)</div>
-            <div class="item-grid" onclick="addItem('calabresa com fritas grande.', 40)">calabresa com fritas <strong>G</strong> (R$40)</div>
-            <div class="item-grid" onclick="addItem('contra  acebolado media', 50)"> contra file acebolado <strong>M</strong> (R$50)</div>
-            <div class="item-grid" onclick="addItem('contra  acebolado grande', 60)">contra file acebolado<strong>G</strong> (R$60)</div>
-            <div class="item-grid" onclick="addItem('contra fritas media', 60)">contra com fritas <strong>M</strong> (R$60)</div>
-            <div class="item-grid" onclick="addItem('contra fritas grande', 70)">contra com fritas <strong>G</strong> (R$70)</div>
-            <div class="item-grid" onclick="addItem('Frango Pass media', 50)"> Frango com fritas<strong>M</strong> (R$50)</div>
-            <div class="item-grid" onclick="addItem('Frango Pass grande', 65)"> Frango com fritas<strong>G</strong> (R$65)</div>
-            <div class="item-grid" onclick="addItem('contra completo2.', 100)"> contra completo <strong>G</strong>(R$100)</div>
-                <div class="item-grid" onclick="addItem('Frango completo2.', 100)"> Frango completo<strong>G</strong> (R$100)</div>
-              
+            <div class="item-grid" onclick="addItem('Batata Frita M', 20)"> Batata <strong>M</strong> (R$20)</div>
+            <div class="item-grid" onclick="addItem('Batata Frita G', 30)"> Batata <strong>G</strong> (R$30)</div>
+            <div class="item-grid" onclick="addItem('Calabresa Acebolada M', 25)"> Calabresa Acebolada <strong>M</strong> (R$25)</div>
+            <div class="item-grid" onclick="addItem('Calabresa Acebolada G', 30)"> Calabresa Acebolada <strong>G</strong> (R$30)</div>
+            <div class="item-grid" onclick="addItem('Calabresa c/ Fritas M', 30)"> Calabresa c/ Fritas <strong>M</strong> (R$30)</div>
+            <div class="item-grid" onclick="addItem('Calabresa c/ Fritas G', 40)"> Calabresa c/ Fritas <strong>G</strong> (R$40)</div>
+            <div class="item-grid" onclick="addItem('Contra Filé Acebolado M', 50)"> Contra Filé Acebolado <strong>M</strong> (R$50)</div>
+            <div class="item-grid" onclick="addItem('Contra Filé Acebolado G', 60)"> Contra Filé Acebolado <strong>G</strong> (R$60)</div>
+            <div class="item-grid" onclick="addItem('Contra c/ Fritas M', 60)"> Contra c/ Fritas <strong>M</strong> (R$60)</div>
+            <div class="item-grid" onclick="addItem('Contra c/ Fritas G', 70)"> Contra c/ Fritas <strong>G</strong> (R$70)</div>
+            <div class="item-grid" onclick="addItem('Frango c/ Fritas M', 50)"> Frango c/ Fritas <strong>M</strong> (R$50)</div>
+            <div class="item-grid" onclick="addItem('Frango c/ Fritas G', 65)"> Frango c/ Fritas <strong>G</strong> (R$65)</div>
+            <div class="item-grid" onclick="addItem('Contra Completo G', 100)"> Contra Completo <strong>G</strong> (R$100)</div>
+            <div class="item-grid" onclick="addItem('Frango Completo G', 100)"> Frango Completo <strong>G</strong> (R$100)</div>
         </div>
         <div id="carrinhoPorcoes"></div>
     </div>
@@ -144,23 +141,23 @@
         <h2>🥤 Bebidas</h2>
         <button class="btn-categoria" onclick="toggleMenu('menuBebidas')">Adicionar Bebidas</button>
         <div id="menuBebidas" class="menu-grid">
-            <div class="item-grid" onclick="addItem('Coca 2L', 15)">🥤 Coca 2L <strong>(R$15) </strong></div>
-             <div class="item-grid" onclick="addItem('Coca zero2L', 15)">🥤 Coca zero2L <strong>(R$15)</strong></div>
-              <div class="item-grid" onclick="addItem('fanta laranja 2L', 12)">🥤 Fanta Laranja 2L <strong>(R$12)</strong></div>
-               <div class="item-grid" onclick="addItem('fanta uva 2L', 12)">🥤 Fanta Uva 2L <strong>(R$12)</strong></div>
-                <div class="item-grid" onclick="addItem('guaraná antartica 2L', 12)">🥤 Guarana antartica 2L <strong>(R$12)</strong></div>
-                 <div class="item-grid" onclick="addItem('it guaraná 2L', 8)">🥤 it Guarana 2L <strong>(R$8)</strong></div>
-                  <div class="item-grid" onclick="addItem('it laranja 2L', 8)">🥤 it Laranja 2L <strong>(R$8)</strong></div>
-                   <div class="item-grid" onclick="addItem('it limão 2L', 8)">🥤 it Limão 2L <strong>(R$8)</strong></div>
-              <div class="item-grid" onclick="addItem('Coca lata ', 5)">🥤 Coca lata <strong>(R$5)</strong></div>
-           <div class="item-grid" onclick="addItem('Coca 600ml', 7)">🥤 Coca 600ml <strong>(R$7)</strong></div>
-            <div class="item-grid" onclick="addItem('guaraná 600ml', 7)">🥤 Guarana 600ml <strong>(R$7)</strong></div>
-            <div class="item-grid" onclick="addItem('guaraviton', 5)">🥤 Guaraviton  <strong>(R$5)</strong></div>
-            <div class="item-grid" onclick="addItem('del valle lata ', 5)">🥤 Del Valle  lata<strong>(R$5)</strong></div>
-              <div class="item-grid" onclick="addItem('del valle 1L', 12)">🥤 Del Valle caixa 1L <strong>(R$12) </strong></div>
-              <div class="item-grid" onclick="addItem('agua pequena ', 2)">🥤 Água Pequena <strong>(R$2)</strong></div>
-            <div class="item-grid" onclick="addItem('original 269', 5)">🥤 Original 269 <strong>(R$5)</strong></div>
-             <div class="item-grid" onclick="addItem('skol 269', 5)">🥤 Skol 269 <strong>(R$5)</strong></div>
+            <div class="item-grid" onclick="addItem('Coca 2L', 15)">🥤 Coca 2L <strong>(R$15)</strong></div>
+            <div class="item-grid" onclick="addItem('Coca Zero 2L', 15)">🥤 Coca Zero 2L <strong>(R$15)</strong></div>
+            <div class="item-grid" onclick="addItem('Fanta Laranja 2L', 12)">🥤 Fanta Laranja 2L <strong>(R$12)</strong></div>
+            <div class="item-grid" onclick="addItem('Fanta Uva 2L', 12)">🥤 Fanta Uva 2L <strong>(R$12)</strong></div>
+            <div class="item-grid" onclick="addItem('Guaraná Antártica 2L', 12)">🥤 Guaraná Ant. 2L <strong>(R$12)</strong></div>
+            <div class="item-grid" onclick="addItem('It Guaraná 2L', 8)">🥤 It Guaraná 2L <strong>(R$8)</strong></div>
+            <div class="item-grid" onclick="addItem('It Laranja 2L', 8)">🥤 It Laranja 2L <strong>(R$8)</strong></div>
+            <div class="item-grid" onclick="addItem('It Limão 2L', 8)">🥤 It Limão 2L <strong>(R$8)</strong></div>
+            <div class="item-grid" onclick="addItem('Coca Lata', 5)">🥤 Coca Lata <strong>(R$5)</strong></div>
+            <div class="item-grid" onclick="addItem('Coca 600ml', 7)">🥤 Coca 600ml <strong>(R$7)</strong></div>
+            <div class="item-grid" onclick="addItem('Guaraná 600ml', 7)">🥤 Guaraná 600ml <strong>(R$7)</strong></div>
+            <div class="item-grid" onclick="addItem('Guaraviton', 5)">🥤 Guaraviton <strong>(R$5)</strong></div>
+            <div class="item-grid" onclick="addItem('Del Valle Lata', 5)">🥤 Del Valle Lata <strong>(R$5)</strong></div>
+            <div class="item-grid" onclick="addItem('Del Valle 1L', 12)">🥤 Del Valle 1L <strong>(R$12)</strong></div>
+            <div class="item-grid" onclick="addItem('Agua Pequena', 2)">🥤 Água Pequena <strong>(R$2)</strong></div>
+            <div class="item-grid" onclick="addItem('Original 269', 5)">🥤 Original 269 <strong>(R$5)</strong></div>
+            <div class="item-grid" onclick="addItem('Skol 269', 5)">🥤 Skol 269 <strong>(R$5)</strong></div>
         </div>
         <div id="carrinhoBebidas"></div>
     </div>
@@ -173,14 +170,13 @@
             <option value="PIX">PIX</option>
         </select>
         <div id="sessaoTroco" class="hidden">
-    <input type="number" id="valorCliente" value="0" placeholder="Troco para quanto? (Ex: 100)" oninput="atualizarTroco()">
-    <div id="infoTroco" class="hidden"></div>
-</div>
+            <input type="number" id="valorCliente" value="0" placeholder="Troco para quanto? (Ex: 100)" oninput="atualizarTroco()">
+            <div id="infoTroco" class="hidden"></div>
         </div>
         <div id="painelPix" class="pix-box hidden" onclick="copiarPix()" style="cursor: pointer;">
-    Chave PIX (Clique para copiar): <br>
-    <b id="chavePix">13997446989</b>
-</div>
+            Chave PIX (Clique para copiar): <br>
+            <b id="chavePix">13997446989</b>
+        </div>
     </div>
 
     <div class="notinha" id="resumoNotinha">
@@ -193,7 +189,6 @@
 </div>
 
 <script>
-    // LISTA COMPLETA DE SABORES
     const listaSabores = [
         {id: 1, nome: "Calabresa", desc: "calabresa com cebola"},
         {id: 2, nome: "Calabresa II", desc: "calabresa com batata palha"},
@@ -247,9 +242,6 @@
         {id: 52, nome: "Champignon", desc: "molho rosê, catupiry ou mussarela"},
         {id: 53, nome: "Três Queijos", desc: "mussarela, catupiry, parmesão"},
         {id: 54, nome: "Bacon Especial", desc: "bacon, mussarela, cheddar"},
-        
-        
-        
         {id: 58, nome: "Peperoni", desc: "muçarela, pepperoni"},
         {id: 59, nome: "Portuguesa", desc: "presunto, ervilha, ovos, cebola, palm., muçarela"},
         {id: 60, nome: "Quatro Queijos", desc: "muçarela, catupiry, parmesão, provolone"},
@@ -265,7 +257,6 @@
         {id: 70, nome: "A Nova Mondialle", desc: "lombo, mussarela, catupiry, tomate seco, bacon"},
         {id: 72, nome: "Portuguesa Especial", desc: "mussarela, presunto, ovos, cebola, ervilha, palmito, bacon"},
         {id: 73, nome: "Portuguesa Super", desc: "mussarela, presunto, ovos, cebola, ervilha, palmito, bacon, calabresa"},
-        
         {id: 82, nome: "Brigadeiro", desc: "chocolate, granulado"},
         {id: 83, nome: "Confete", desc: "chocolate, confete"},
         {id: 84, nome: "Romeu e Julieta", desc: "mussarela, goiabada"},
@@ -277,7 +268,8 @@
     ];
 
     let pizzaAtual = { tam: 'Grande', preco: 40, tipo: 'inteira', s1: '', s2: '' };
-    let pizzas = []; let extras = {};
+    let pizzas = []; 
+    let extras = {};
 
     function saveData(el) { localStorage.setItem(el.id, el.value); }
 
@@ -287,17 +279,14 @@
             if(val) document.getElementById(f).value = val;
         });
         
-        // Carrega os sabores nos menus
         const menu1 = document.getElementById('lista1');
         const menu2 = document.getElementById('lista2');
         let htmlSabores = "";
         listaSabores.forEach(s => {
-            htmlSabores += `<div class="item-grid" onclick="selecionarSabor(${s.id === 1 || s.id === 2 ? (menu1.style.display === 'grid' ? 1 : 1) : 1}, '${s.nome}')"><b>${s.id} - ${s.nome}</b><span>(${s.desc})</span></div>`;
+            htmlSabores += `<div class="item-grid" onclick="selecionarSabor('${s.nome}')"><b>${s.id} - ${s.nome}</b><span>(${s.desc})</span></div>`;
         });
-        // Injeta o HTML nos dois menus
         menu1.innerHTML = htmlSabores;
         menu2.innerHTML = htmlSabores;
-
         calc();
     };
 
@@ -310,8 +299,7 @@
     function setTamanho(t,p) { pizzaAtual.tam=t; pizzaAtual.preco=p; document.getElementById('tG').classList.toggle('active', t==='Grande'); document.getElementById('tB').classList.toggle('active', t==='Broto'); calc(); }
     function setTipo(ti) { pizzaAtual.tipo=ti; document.getElementById('bI').classList.toggle('active', ti==='inteira'); document.getElementById('bM').classList.toggle('active', ti==='meia'); document.getElementById('containerMeia').classList.toggle('hidden', ti==='inteira'); }
     
-    function selecionarSabor(num, s) { 
-        // Lógica inteligente para saber qual botão foi clicado
+    function selecionarSabor(s) { 
         if(document.getElementById('lista1').style.display === 'grid') {
             pizzaAtual.s1 = s;
             document.getElementById('btnSabor1').innerText = s;
@@ -339,7 +327,6 @@
             obs: obs 
         });
 
-        // Reset
         pizzaAtual.s1=''; pizzaAtual.s2=''; 
         document.getElementById('btnSabor1').innerText='Escolher Sabor'; 
         document.getElementById('btnSabor2').innerText='Escolher 2º Sabor';
@@ -363,10 +350,41 @@
     }
 
     function renderExtras() {
-        document.getElementById('carrinhoEsfihas').innerHTML = ''; document.getElementById('carrinhoPorcoes').innerHTML = ''; document.getElementById('carrinhoBebidas').innerHTML = '';
+        document.getElementById('carrinhoEsfihas').innerHTML = '';
+        document.getElementById('carrinhoPorcoes').innerHTML = '';
+        document.getElementById('carrinhoBebidas').innerHTML = '';
+
         for (let n in extras) {
-            let catId = n.includes('Esfiha') ? 'carrinhoEsfihas' : (n.includes('Coca') ? 'carrinhoBebidas' : 'carrinhoPorcoes');
-            document.getElementById(catId).innerHTML += `<div class="item-selecionado"><span>${n} (x${extras[n].qtd})</span><div class="controles"><button class="btn-qtd" onclick="mudarExtra('${n}',-1)">-</button><button class="btn-qtd" onclick="mudarExtra('${n}',1)">+</button></div></div>`;
+            let nomeLower = n.toLowerCase();
+            let catId = '';
+
+            // Lógica Inteligente de Separação
+            if (nomeLower.includes('esfiha')) {
+                catId = 'carrinhoEsfihas';
+            } else if (
+                nomeLower.includes('coca') || 
+                nomeLower.includes('fanta') || 
+                nomeLower.includes('guaraná') || 
+                nomeLower.includes('it ') || 
+                nomeLower.includes('guaraviton') || 
+                nomeLower.includes('del valle') || 
+                nomeLower.includes('agua') || 
+                nomeLower.includes('original') || 
+                nomeLower.includes('skol')
+            ) {
+                catId = 'carrinhoBebidas';
+            } else {
+                catId = 'carrinhoPorcoes';
+            }
+
+            document.getElementById(catId).innerHTML += `
+                <div class="item-selecionado">
+                    <span>${n} (x${extras[n].qtd})</span>
+                    <div class="controles">
+                        <button class="btn-qtd" onclick="mudarExtra('${n}',-1)">-</button>
+                        <button class="btn-qtd" onclick="mudarExtra('${n}',1)">+</button>
+                    </div>
+                </div>`;
         }
     }
 
@@ -397,61 +415,42 @@
         document.getElementById('resTotal').innerText = "R$ " + total.toFixed(2);
         return total;
     }
+
     function copiarPix() {
-    // Pega o texto da chave
-    const chave = document.getElementById('chavePix').innerText;
-    
-    // Copia para a área de transferência
-    navigator.clipboard.writeText(chave).then(() => {
-        // Alerta o cliente que deu certo
-        alert("Chave PIX copiada com sucesso!");
-    }).catch(err => {
-        console.error('Erro ao copiar: ', err);
-    });
-}
-
-    function enviar() {
-    let n = document.getElementById('nome').value;
-    let r = document.getElementById('rua').value;
-    let b = document.getElementById('bairro').options[document.getElementById('bairro').selectedIndex].text;
-    let total = calc();
-    
-    // Validações básicas
-    if(!n || !r || b.includes("Escolha")) return alert("Preencha Nome, Rua e Bairro!");
-    if(pizzas.length === 0 && Object.keys(extras).length === 0) return alert("Seu carrinho está vazio!");
-    
-    let pag = document.getElementById('pagamento').value;
-    let infoPag = `*Pgto:* ${pag}`;
-
-    // NOVA VALIDAÇÃO DE TROCO
-    if(pag === 'Dinheiro') {
-        let campoTroco = document.getElementById('valorCliente').value;
-        let vCli = parseFloat(campoTroco);
-
-        if(campoTroco === "" || isNaN(vCli)) {
-            return alert("Por favor, informe se precisa de troco. Digite o valor ou '0' para não precisar.");
-        }
-
-        if(vCli > total) {
-            infoPag += ` (Paga com R$ ${vCli.toFixed(2)} | Troco: R$ ${(vCli-total).toFixed(2)})`;
-        } else if (vCli === 0) {
-            infoPag += ` (Não precisa de troco)`;
-        } else if (vCli < total && vCli !== 0) {
-            return alert("O valor para troco não pode ser menor que o total do pedido!");
-        }
+        const chave = document.getElementById('chavePix').innerText;
+        navigator.clipboard.writeText(chave).then(() => {
+            alert("Chave PIX copiada com sucesso!");
+        });
     }
 
-    // Montagem da mensagem (Igual ao seu código anterior)
-    let msg = `*NOVO PEDIDO*\n*Cliente:* ${n}\n*End:* ${r}, ${document.getElementById('numero').value}\n*Bairro:* ${b}\n*Ref:* ${document.getElementById('ref').value}\n\n*ITENS:*\n`;
-    pizzas.forEach(p => {
-        msg += `- ${p.nome} (R$ ${p.preco.toFixed(2)})\n`;
-        if(p.obs) msg += `  └ Obs: ${p.obs}\n`;
-    });
-    for (let it in extras) msg += `- ${it} x${extras[it].qtd} (R$ ${(extras[it].qtd*extras[it].preco).toFixed(2)})\n`;
-    msg += `\n*TOTAL: R$ ${total.toFixed(2)}*\n${infoPag}`;
-    
-    window.open(`https://wa.me/5513996963108?text=${encodeURIComponent(msg)}`);
-}
+    function enviar() {
+        let n = document.getElementById('nome').value;
+        let r = document.getElementById('rua').value;
+        let b = document.getElementById('bairro').options[document.getElementById('bairro').selectedIndex].text;
+        let total = calc();
+        
+        if(!n || !r || b.includes("Escolha")) return alert("Preencha Nome, Rua e Bairro!");
+        if(pizzas.length === 0 && Object.keys(extras).length === 0) return alert("Seu carrinho está vazio!");
+        
+        let pag = document.getElementById('pagamento').value;
+        let infoPag = `*Pgto:* ${pag}`;
+
+        if(pag === 'Dinheiro') {
+            let vCli = parseFloat(document.getElementById('valorCliente').value);
+            if(vCli > total) infoPag += ` (Paga com R$ ${vCli.toFixed(2)} | Troco: R$ ${(vCli-total).toFixed(2)})`;
+            else if (vCli === 0) infoPag += ` (Não precisa de troco)`;
+        }
+
+        let msg = `*NOVO PEDIDO*\n*Cliente:* ${n}\n*End:* ${r}, ${document.getElementById('numero').value}\n*Bairro:* ${b}\n*Ref:* ${document.getElementById('ref').value}\n\n*ITENS:*\n`;
+        pizzas.forEach(p => {
+            msg += `- ${p.nome} (R$ ${p.preco.toFixed(2)})\n`;
+            if(p.obs) msg += `  └ Obs: ${p.obs}\n`;
+        });
+        for (let it in extras) msg += `- ${it} x${extras[it].qtd} (R$ ${(extras[it].qtd*extras[it].preco).toFixed(2)})\n`;
+        msg += `\n*TOTAL: R$ ${total.toFixed(2)}*\n${infoPag}`;
+        
+        window.open(`https://wa.me/5513996963108?text=${encodeURIComponent(msg)}`);
+    }
 </script>
 </body>
 </html>
